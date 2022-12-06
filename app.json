@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "Re-Record",
+    "slug": "Re-Record",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "Re-Record"
+}
