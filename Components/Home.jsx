@@ -1,11 +1,46 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import { Audio } from 'expo-av';
 import * as Sharing from 'expo-sharing';
+import { auth } from '../config/firebase';
+import { getDocs, collection, query, where,  addDoc, getFirestore } from 'firebase/firestore';
+
+const db = getFirestore();
 
 export default function Home() {
+
+
+  const [profile, setProfile] = useState({});
+
+  const productsCollection = collection(db, 'profiles')
+
+    const getProfile = async() =>{
+        const q = query(productsCollection, where('email', '==', auth.currentUser.email));
+        const querySnapShots = await getDocs(q);
     
+        let tmpProfile = [];
+    
+        querySnapShots.forEach(
+        (profile) => {
+            console.log(profile.data());
+        //   tmpProfile.push({...profile.data(), id: profile.id});
+          tmpProfile = profile.data();
+          console.log(tmpProfile);
+        }
+        );
+    
+        setProfile(tmpProfile);
+    }
+
+      console.log(profile)
+
+    useEffect(()=>{
+        // console.log( auth.currentUser.email);
+        getProfile();
+      },[])
+
+
   const [recording, setRecording] = React.useState();
   const [recordings, setRecordings] = React.useState([]);
   const [message, setMessage] = React.useState("");
@@ -70,6 +105,9 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
+    <View style={{ backgroundColor: '', width: '50vw', height: '10vh', color: 'white' }}>
+        <Text> Welcome { profile.FirstName } { profile.LastName}  </Text>
+    </View>
       <Text>{message}</Text>
       <Button
         title={recording ? 'Stop Recording' : 'Start Recording'}
